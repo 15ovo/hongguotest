@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-22.04 # 锁定使用稳定的旧版系统
+    runs-on: ubuntu-22.04
 
     steps:
       - name: Checkout code
@@ -19,11 +19,17 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3 # 加回这个插件来配置环境变量
+      - name: Configure Android SDK Environment
+        run: |
+          # 手动告诉系统自带安卓工具的位置，绕过第三方插件
+          echo "ANDROID_HOME=/usr/local/lib/android/sdk" >> $GITHUB_ENV
+          echo "ANDROID_SDK_ROOT=/usr/local/lib/android/sdk" >> $GITHUB_ENV
+          echo "/usr/local/lib/android/sdk/cmdline-tools/latest/bin" >> $GITHUB_PATH
+          echo "/usr/local/lib/android/sdk/platform-tools" >> $GITHUB_PATH
 
       - name: Install Android SDK 36
         run: |
+          sdkmanager --version
           yes | sdkmanager --licenses || true
           sdkmanager "platforms;android-36" "build-tools;36.0.0"
 
