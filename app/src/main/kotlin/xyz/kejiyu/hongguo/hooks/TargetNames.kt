@@ -4,7 +4,9 @@ object TargetNames {
 
     const val CN_PACKAGE = "com.phoenix.read"
     const val OVERSEA_PACKAGE = "com.phoenix.read.oversea.gp"
-    val SUPPORTED_CN_VERSIONS = listOf("7.3.1.32", "7.3.2.32", "7.3.3.18")
+    
+    // 新增支持 7.3.7.32
+    val SUPPORTED_CN_VERSIONS = listOf("7.3.1.32", "7.3.2.32", "7.3.3.18", "7.3.7.32")
     val SUPPORTED_OVERSEA_VERSIONS = listOf("7.3.1.32")
 
     data class Names(
@@ -258,6 +260,67 @@ object TargetNames {
         pauseRestoreIds = listOf(0x7F112411),
     )
 
+    // 新增 7.3.7.32 配置块（目前暂用 7.3.3.18 的混淆名）
+    internal val CN_73732 = Names(
+        profileId = "CN-7.3.7.32",
+        packageName = CN_PACKAGE,
+        versionName = "7.3.7.32",
+        useLegacySeedIds = false,
+        structuralFullscreenWatch = true,
+        seriesToolbarProfile = "cn73318",
+        shortHolder = "cy4.t",
+        holderBaseS1 = "cy4.i0",
+        shortStateMethod = "T1",
+        shortMaskMethod = "N3",
+        shortControlsMethod = "Qa",
+        shortConfigMethod = "x4",
+        shortLayoutResetMethod = "z4",
+        shortLandscapeMethod = "B4",
+        shortMaskField = "S2",
+        shortNativeClearField = "n3",
+        shortCleanManagerField = "m3",
+        homeFragmentMaskMethod = "p0",
+        homeFragmentMaskField = "e",
+        seriesFragmentRefreshMethod = "Qa",
+        seriesPagerGetter = "Tg",
+        seriesHolderGetter = "t2",
+        seriesLayoutFields = listOf("s3", "i", "j", "q", "l", "m", "r", "r3"),
+        fixedToolbarShowMethod = "T",
+        customizeToolbarShowMethod = "P",
+        customizeToolbarApplyMethod = "R",
+        toolbarBase = "hw7.c",
+        progressBar = "bi4.h1",
+        hideView1 = "",
+        hideView2 = "fy4.e",
+        oledBright = "x83.h",
+        oledBrightAction = "z83.a",
+        topZoneTouch = "fy7.b",
+        playbackState = "ov7.b",
+        adVideoEndShowMethod = "q",
+        pauseAdEntryClass = "com.dragon.read.component.shortvideo.impl.inject.view.k4",
+        pauseAdEntryMethod = "b",
+        resolutionController = "nx4.w",
+        resolutionModelMethods = listOf("f", "i"),
+        resolutionEngineField = "h",
+        resolutionApplyMethod = "q",
+        doubleTapHandlers = listOf("ay4.g0", "ji4.e", "com.dragon.read.component.shortvideo.impl.fullscreen.f\$d"),
+        doubleTapLikeView = "ji4.e",
+        doubleTapHolderLikeMethod = "u4",
+        rightViewAgency = "com.dragon.read.component.shortvideo.impl.inject.view.u6",
+        rightViewAgencyEventMethod = "q",
+        kmpAcctService = listOf(
+            "rc3.h",
+            "com.dragon.read.kmp.service.w",
+            "com.dragon.read.kmp.service.n0",
+        ),
+        kmpVipModel = "wq5.e",
+        hideIdNames = listOf("iu1", "fxu", "hs9"),
+        progressIdNames = listOf("hox"),
+        staticHideIds = listOf(0x7F1133AE, 0x7F112411, 0x7F112E0D),
+        staticProgressIds = listOf(0x7F112D92),
+        pauseRestoreIds = listOf(0x7F112411),
+    )
+
     internal val OVERSEA_73132 = Names(
         profileId = "OVERSEA-7.3.1.32",
         packageName = OVERSEA_PACKAGE,
@@ -332,6 +395,7 @@ object TargetNames {
 
         val normalized = versionName?.trim()?.substringBefore(' ') ?: ""
         val byVersion = when (normalized) {
+            "7.3.7.32" -> CN_73732 // 新增
             "7.3.3.18" -> CN_73318
             "7.3.2.32" -> CN_73232
             "7.3.1.32" -> CN_73132
