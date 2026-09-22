@@ -32,81 +32,27 @@ object UpdateChecker {
     private val callbacks = mutableListOf<(String?) -> Unit>()
     private val mainHandler = Handler(Looper.getMainLooper())
 
+    // 已拦截：直接返回，不执行网络检查
     fun checkUpdate(version: String, onResult: ((String?) -> Unit)? = null) {
-        if (currentVersion.isEmpty()) currentVersion = version
-        if (onResult != null) synchronized(callbacks) { callbacks.add(onResult) }
-        if (checking) return
-        checking = true
-        Thread {
-            var newer: String? = null
-            try {
-                val tag = fetchLatestTag()
-                latestVersion = tag
-                lastError = null
-                if (tag != null && compareVersions(tag, version) > 0) {
-                    hasUpdate = true
-                    newer = tag
-                } else {
-                    hasUpdate = false
-                }
-            } catch (e: Exception) {
-                lastError = e.message ?: "网络错误"
-                hasUpdate = false
-            } finally {
-                checking = false
-            }
-            mainHandler.post {
-                val list = synchronized(callbacks) { callbacks.toList().also { callbacks.clear() } }
-                list.forEach { it(newer) }
-            }
-        }.start()
+        currentVersion = version
+        onResult?.invoke(null)
     }
 
+    // 已拦截：直接返回，永不弹窗
     fun showUpdateDialogIfNeeded(ctx: Context) {
-        if (!hasUpdate) return
-        val latest = latestVersion ?: return
-        if (ctx !is Activity || ctx.isFinishing) return
-        if (shownOnce) return
-        shownOnce = true
-        showUpdateDialog(ctx, currentVersion.ifEmpty { "未知" }, latest)
+        // 装死，啥也不干
     }
 
     fun resetShown() { shownOnce = false }
 
+    // 保留原方法，防止外部代码报错
     fun showUpdateDialog(ctx: Context, current: String, latest: String) {
-        try {
-            AlertDialog.Builder(ctx)
-                .setTitle("发现新版本")
-                .setMessage("当前版本：$current\n最新版本：$latest\n\n是否前往 GitHub 下载更新？")
-                .setPositiveButton("去更新") { _, _ -> openUrl(ctx, RELEASES_URL) }
-                .setNegativeButton("取消", null)
-                .show()
-        } catch (e: Exception) {
-            LogUtil.error("更新弹窗失败", e)
-        }
+        // 留空即可
     }
 
+    // 保留原方法，防止外部代码报错
     private fun fetchLatestTag(): String? {
-        val conn = URL(RELEASES_URL).openConnection() as HttpURLConnection
-        try {
-            conn.connectTimeout = 8000
-            conn.readTimeout = 8000
-            conn.instanceFollowRedirects = false
-            conn.setRequestProperty("User-Agent", "Mozilla/5.0 (Linux; Android 10) AppleWebKit/537.36")
-            conn.requestMethod = "GET"
-            val status = conn.responseCode
-            val loc = conn.getHeaderField("Location")?.trim()?.trimEnd('/')
-            if (status in 300..399 && !loc.isNullOrEmpty()) {
-
-                return loc.substringAfterLast('/').removePrefix("v").trim()
-            }
-
-            val html = conn.inputStream.bufferedReader(Charsets.UTF_8).use { it.readText() }
-            return Regex("""/KEJIYUNB/hongguo/releases/tag/([^"'\s<>?]+)""").find(html)
-                ?.groupValues?.get(1)?.removePrefix("v")?.trim()
-        } finally {
-            conn.disconnect()
-        }
+        return null
     }
 
     fun compareVersions(a: String, b: String): Int {
